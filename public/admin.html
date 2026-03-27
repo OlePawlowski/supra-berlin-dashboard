@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supra Berlin | Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body data-page="admin">
+    <div id="admin-login-overlay" class="login-overlay">
+      <div class="login-card">
+        <span class="eyebrow">Admin-Login</span>
+        <h1>Gruppenanfragen Dashboard</h1>
+        <p>Nur für das Restaurantteam. Bitte mit dem Admin-Passwort anmelden.</p>
+        <form id="admin-login-form" class="stack-form">
+          <label>
+            <span>Passwort</span>
+            <input type="password" name="password" placeholder="Admin-Passwort" required>
+          </label>
+          <button class="primary-button" type="submit">Anmelden</button>
+          <p class="form-feedback" id="admin-login-feedback" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
+    <main class="admin-shell">
+      <header class="admin-header">
+        <div>
+          <span class="eyebrow">Supra Berlin</span>
+          <h1>Dashboard für Gruppenanfragen</h1>
+          <p class="muted">Anfragen prüfen, bestätigen, kalenderbasiert planen und per E-Mail kommunizieren.</p>
+        </div>
+        <div class="header-actions">
+          <button id="sync-inbox-button" class="secondary-button" type="button">Inbox synchronisieren</button>
+          <button id="logout-button" class="ghost-button" type="button">Abmelden</button>
+        </div>
+      </header>
+
+      <section class="summary-grid" id="summary-grid"></section>
+
+      <section class="admin-toolbar">
+        <label>
+          <span>Suche</span>
+          <input id="search-input" type="search" placeholder="Name, E-Mail, Telefon, Referenz">
+        </label>
+        <label>
+          <span>Status</span>
+          <select id="status-filter">
+            <option value="all">Alle</option>
+            <option value="new">Neu</option>
+            <option value="review">In Prüfung</option>
+            <option value="confirmed">Bestätigt</option>
+            <option value="declined">Abgelehnt</option>
+            <option value="completed">Abgeschlossen</option>
+          </select>
+        </label>
+        <label>
+          <span>Monat</span>
+          <input id="month-input" type="month">
+        </label>
+        <button id="reload-button" class="secondary-button" type="button">Neu laden</button>
+      </section>
+
+      <section class="admin-grid">
+        <aside class="panel request-list-panel">
+          <div class="panel-topline">
+            <h2>Anfragen</h2>
+            <span id="request-count-badge" class="badge-soft">0</span>
+          </div>
+          <div id="request-list" class="request-list"></div>
+        </aside>
+
+        <section class="panel detail-panel">
+          <div id="empty-detail" class="empty-state">
+            <h2>Keine Anfrage ausgewählt</h2>
+            <p>Bitte links eine Anfrage auswählen, um Details, Verlauf und Aktionen zu sehen.</p>
+          </div>
+
+          <div id="detail-content" class="detail-content is-hidden">
+            <div class="detail-header">
+              <div>
+                <span id="detail-code" class="eyebrow"></span>
+                <h2 id="detail-name"></h2>
+                <p id="detail-meta" class="muted"></p>
+              </div>
+              <span id="detail-status" class="status-pill"></span>
+            </div>
+
+            <div class="detail-grid">
+              <div class="detail-card">
+                <h3>Reservierung</h3>
+                <dl id="detail-booking-info" class="detail-list"></dl>
+              </div>
+              <div class="detail-card">
+                <h3>Gast & Notizen</h3>
+                <dl id="detail-contact-info" class="detail-list"></dl>
+              </div>
+            </div>
+
+            <div class="detail-card">
+              <div class="panel-topline">
+                <h3>Status & Antwort</h3>
+                <span class="badge-soft">Automatische Mail optional</span>
+              </div>
+              <form id="status-form" class="stack-form compact">
+                <label>
+                  <span>Neuer Status</span>
+                  <select name="status">
+                    <option value="new">Neu</option>
+                    <option value="review">In Prüfung</option>
+                    <option value="confirmed">Bestätigt</option>
+                    <option value="declined">Abgelehnt</option>
+                    <option value="completed">Abgeschlossen</option>
+                  </select>
+                </label>
+                <label>
+                  <span>E-Mail Text optional</span>
+                  <textarea name="emailBody" rows="5" placeholder="Eigene Antwort an den Gast"></textarea>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="sendEmail" checked>
+                  <span>Nach Statuswechsel E-Mail senden</span>
+                </label>
+                <button class="primary-button" type="submit">Status aktualisieren</button>
+              </form>
+            </div>
+
+            <div class="detail-grid">
+              <div class="detail-card">
+                <h3>Nachricht an Gast</h3>
+                <form id="message-form" class="stack-form compact">
+                  <label>
+                    <span>Betreff</span>
+                    <input name="subject" type="text" placeholder="Rückfrage zur Reservierung">
+                  </label>
+                  <label>
+                    <span>Nachricht</span>
+                    <textarea name="body" rows="6" placeholder="Nachricht an den Gast"></textarea>
+                  </label>
+                  <button class="primary-button" type="submit">E-Mail senden</button>
+                </form>
+              </div>
+
+              <div class="detail-card">
+                <h3>Interne Notiz</h3>
+                <form id="note-form" class="stack-form compact">
+                  <label>
+                    <span>Notiz</span>
+                    <textarea name="body" rows="6" placeholder="Interne Info für das Team"></textarea>
+                  </label>
+                  <button class="secondary-button" type="submit">Notiz speichern</button>
+                </form>
+              </div>
+            </div>
+
+            <div class="detail-card">
+              <h3>Verlauf</h3>
+              <div id="timeline" class="timeline"></div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="calendar-section">
+        <div class="panel">
+          <div class="panel-topline">
+            <h2>Kalender</h2>
+            <span class="badge-soft">Monatsansicht</span>
+          </div>
+          <div id="calendar-grid" class="calendar-grid"></div>
+        </div>
+      </section>
+
+      <section class="activity-section">
+        <div class="panel">
+          <div class="panel-topline">
+            <h2>Letzte Aktivität</h2>
+            <span class="badge-soft">System & Nachrichten</span>
+          </div>
+          <div id="activity-list" class="activity-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

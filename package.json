@@ -1,0 +1,22 @@
+{
+  "name": "group-booking-dashboard",
+  "version": "1.0.0",
+  "description": "Dashboard fuer Gruppenanfragen bei Supra Berlin",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "better-sqlite3": "^12.8.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "imapflow": "^1.2.13",
+    "mailparser": "^3.9.4",
+    "nodemailer": "^8.0.2"
+  }
+}
